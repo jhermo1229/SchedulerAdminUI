@@ -1,0 +1,333 @@
+﻿<Window x:Class="SchedulerAdminUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:conv="clr-namespace:SchedulerAdminUI.Converters"
+        mc:Ignorable="d"
+        Title="Scheduler Admin UI"
+        Icon="Assets/sanigear-icon.ico"
+        Height="780"
+        Width="1350"
+        MinHeight="700"
+        MinWidth="1150">
+
+    <Window.Resources>
+        <conv:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2.2*"/>
+            <ColumnDefinition Width="12"/>
+            <ColumnDefinition Width="1.3*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT COLUMN -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="12"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="12"/>
+                <RowDefinition Height="170"/>
+            </Grid.RowDefinitions>
+
+            <!-- Row 1: Status -->
+            <Border Grid.Row="0"
+                    Padding="12"
+                    BorderBrush="#D0D0D0"
+                    BorderThickness="1"
+                    CornerRadius="6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Scheduler Status"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,10"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="API Server:"
+                                       VerticalAlignment="Center"
+                                       FontWeight="SemiBold"
+                                       Margin="0,0,10,0"/>
+                            <ComboBox Width="280"
+                                      ItemsSource="{Binding ApiUrls}"
+                                      SelectedItem="{Binding SelectedApiUrl}"
+                                      SelectionChanged="ApiUrlComboBox_SelectionChanged"/>
+                        </StackPanel>
+
+                        <TextBlock Text="{Binding IsSchedulerRunning, StringFormat=Running: {0}}"
+                                   Margin="0,0,0,4"/>
+                        <TextBlock Text="{Binding ConfiguredJobCount, StringFormat=Configured Jobs: {0}}"
+                                   Margin="0,0,0,4"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                        <Button Content="Refresh"
+                                Width="110"
+                                Height="34"
+                                Margin="10,0,0,0"
+                                Click="RefreshButton_Click"
+                                IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Row 2: Jobs -->
+            <Border Grid.Row="2"
+                    Padding="8"
+                    BorderBrush="#D0D0D0"
+                    BorderThickness="1"
+                    CornerRadius="6">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="Jobs"
+                               FontSize="18"
+                               FontWeight="Bold"/>
+
+                    <DataGrid Grid.Row="2"
+                              ItemsSource="{Binding Jobs}"
+                              SelectedItem="{Binding SelectedJob}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              HeadersVisibility="Column"
+                              RowHeaderWidth="0"
+                              RowBackground="White"
+                              AlternatingRowBackground="#F7F7F7">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                            <DataGridCheckBoxColumn Header="Enabled" Binding="{Binding Enabled}" Width="95"/>
+                            <DataGridTextColumn Header="Time" Binding="{Binding TimeOfDay}" Width="100"/>
+                            <DataGridTextColumn Header="Plant" Binding="{Binding PlantDisplay}" Width="110"/>
+                            <DataGridTextColumn Header="Days" Binding="{Binding DaysDisplay}" Width="190">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Recipients" Binding="{Binding RecipientCount}" Width="90"/>
+                            <DataGridTextColumn Header="Type" Binding="{Binding ReportType}" Width="120"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+            <!-- Row 3: Console -->
+            <Border Grid.Row="4"
+                    Padding="12"
+                    BorderBrush="#D0D0D0"
+                    BorderThickness="1"
+                    CornerRadius="6">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="Console"
+                               FontSize="18"
+                               FontWeight="Bold"/>
+
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+
+                            <!-- Success / Status -->
+                            <Border Background="#EEF7EE"
+            BorderBrush="#8BC48B"
+            BorderThickness="1"
+            CornerRadius="6"
+            Padding="8"
+            Margin="0,0,0,8"
+            Visibility="{Binding SchedulerMessage, Converter={StaticResource StringToVisibilityConverter}}">
+                                <TextBlock Text="{Binding SchedulerMessage}"
+                   Foreground="#2F6B2F"
+                   TextWrapping="Wrap"/>
+                            </Border>
+
+                            <!-- Loading -->
+                            <Border Background="#EEF4FF"
+            BorderBrush="#7EA6E0"
+            BorderThickness="1"
+            CornerRadius="6"
+            Padding="8"
+            Margin="0,0,0,8"
+            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="Assets/sanigear-logo.png"
+                   Width="22"
+                   Height="22"
+                   Margin="0,0,8,0"/>
+
+                                    <TextBlock Text="{Binding LoadingMessage}"
+                       Foreground="#1E4E9D"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Error -->
+                            <Border Background="#FFEAEA"
+            BorderBrush="#D66"
+            BorderThickness="1"
+            CornerRadius="6"
+            Padding="10"
+            Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                                <StackPanel>
+                                    <TextBlock Text="Connection Problem"
+                       FontWeight="Bold"
+                       FontSize="15"
+                       Foreground="#A00000"
+                       Margin="0,0,0,6"/>
+
+                                    <TextBlock Text="{Binding ErrorMessage}"
+                       Foreground="#A00000"
+                       TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- RIGHT COLUMN -->
+        <Border Grid.Column="2"
+                Padding="12"
+                BorderBrush="#D0D0D0"
+                BorderThickness="1"
+                CornerRadius="6">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Selected Job Details"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Margin="0,0,0,12"/>
+
+                    <TextBlock Text="Name" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding SelectedJob.Name}"
+                               Margin="0,2,0,10"
+                               TextWrapping="Wrap"/>
+
+                    <TextBlock Text="Enabled" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding SelectedJob.Enabled}"
+                               Margin="0,2,0,10"/>
+
+                    <TextBlock Text="Time" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding SelectedJob.TimeOfDay}"
+                               Margin="0,2,0,10"/>
+
+                    <TextBlock Text="Plant" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding SelectedJob.PlantDisplay}"
+                               Margin="0,2,0,10"/>
+
+                    <TextBlock Text="Days" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding SelectedJob.DaysDisplay}"
+                               Margin="0,2,0,10"
+                               TextWrapping="Wrap"/>
+
+                    <TextBlock Text="Recipients" FontWeight="SemiBold"/>
+                    <ListBox ItemsSource="{Binding SelectedJob.Recipients}"
+                             SelectedItem="{Binding SelectedRecipient}"
+                             Height="120"
+                             Margin="0,4,0,10"/>
+
+                    <TextBlock Text="New Recipient Email" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding NewRecipientEmail, UpdateSourceTrigger=PropertyChanged}"
+                             Height="30"
+                             Margin="0,4,0,10"
+                             IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button Content="Add Email"
+                                Width="110"
+                                Height="32"
+                                Margin="0,0,10,0"
+                                Click="AddRecipientButton_Click"
+                                IsEnabled="{Binding CanEditActions}"/>
+
+                        <Button Content="Remove Selected"
+                                Width="135"
+                                Height="32"
+                                Click="RemoveRecipientButton_Click"
+                                IsEnabled="{Binding CanRemoveRecipient}"/>
+                    </StackPanel>
+
+                    <Separator Margin="0,10,0,10"/>
+
+                    <TextBlock Text="Run Report or Enable/Disable Report"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                    <WrapPanel Margin="0,0,0,10">
+                        <Button Content="Run Now"
+                                Width="110"
+                                Height="34"
+                                Margin="0,0,10,10"
+                                Click="RunNowButton_Click"
+                                IsEnabled="{Binding CanEditActions}"/>
+
+                        <Button Content="Toggle Enable"
+                                Width="130"
+                                Height="34"
+                                Margin="0,0,10,10"
+                                Click="ToggleButton_Click"
+                                IsEnabled="{Binding CanEditActions}"/>
+                    </WrapPanel>
+
+                    <Separator Margin="0,10,0,10"/>
+
+                    <TextBlock Text="Commands"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                    <WrapPanel>
+                        <Button Content="Change Time"
+        Width="120"
+        Height="34"
+        Margin="0,0,10,10"
+        Click="ChangeTimeButton_Click"
+        IsEnabled="{Binding CanEditActions}"/>
+
+                        <Button Content="Edit Days"
+        Width="120"
+        Height="34"
+        Margin="0,0,10,10"
+        Click="EditDaysButton_Click"
+        IsEnabled="{Binding CanEditActions}"/>
+
+                        <Button Content="Rename Job"
+        Width="120"
+        Height="34"
+        Margin="0,0,10,10"
+        Click="RenameJobButton_Click"
+        IsEnabled="{Binding CanEditActions}"/>
+                    </WrapPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Window>

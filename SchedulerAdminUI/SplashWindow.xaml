@@ -1,0 +1,57 @@
+﻿<Window x:Class="SchedulerAdminUI.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Icon="Assets/sanigear-icon.ico"
+        Height="460"
+        Width="680"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <Border Background="White"
+            CornerRadius="14"
+            Padding="30"
+            BorderBrush="#D0D0D0"
+            BorderThickness="1">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Image Source="Assets/sanigear-logo.png"
+                   Width="280"
+                   Height="150"
+                   Stretch="Uniform"
+                   Margin="0,0,0,20"/>
+
+            <TextBlock Text="Sanigear Automation Report Admin"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,8"/>
+
+            <TextBlock Text="Initiating Report Access..."
+                       FontSize="14"
+                       Foreground="Gray"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,18"/>
+
+            <Border Background="#FFF8E1"
+        BorderBrush="#E0C97F"
+        BorderThickness="1"
+        CornerRadius="8"
+        Padding="12"
+        Margin="0,10,0,18"
+        MaxWidth="520">
+                <TextBlock Text="Reminder: Make sure the laptop in the IT Room is running and logged in."
+               FontSize="14"
+               FontWeight="Bold"
+               Foreground="#7A5A00"
+               TextAlignment="Center"
+               TextWrapping="Wrap"/>
+            </Border>
+
+            <ProgressBar Width="260"
+                         Height="8"
+                         IsIndeterminate="True"/>
+        </StackPanel>
+    </Border>
+</Window>
