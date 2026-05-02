@@ -86,7 +86,16 @@ namespace SchedulerAdminUI.ViewModels
             if (string.IsNullOrWhiteSpace(SelectedApiUrl))
                 return;
 
+            // Clear console state
+            SchedulerMessage = $"Connecting to {SelectedApiUrl}";
+            ErrorMessage = "";
+            LoadingMessage = "";
+
+            // Optional: clear selected job while switching
+            SelectedJob = null;
+
             _apiService.SetBaseUrl(SelectedApiUrl);
+
             await LoadAsync();
         }
 
