@@ -120,12 +120,6 @@ namespace SchedulerAdminUI
             {
                 var updater = new AppUpdateService();
 
-                MessageBox.Show(
-                    "Checking GitHub for updates...",
-                    "Updater",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
                 var result = await updater.CheckAndUpdateAsync();
 
                 MessageBox.Show(
@@ -137,10 +131,10 @@ namespace SchedulerAdminUI
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Update failed:\n{ex.Message}",
+                    $"Update check failed.\n\n{ex.Message}",
                     "Updater",
                     MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                    MessageBoxImage.Warning);
             }
         }
 

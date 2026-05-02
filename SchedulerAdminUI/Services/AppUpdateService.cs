@@ -19,18 +19,25 @@ namespace SchedulerAdminUI.Services
         public async Task<string> CheckAndUpdateAsync(Action<int>? progress = null)
         {
             if (!_updateManager.IsInstalled)
-                return "Updates only work after the app is installed from a Velopack release.";
+                return "Updater only works after installing from Setup.exe.";
 
-            var updateInfo = await _updateManager.CheckForUpdatesAsync();
+            try
+            {
+                var updateInfo = await _updateManager.CheckForUpdatesAsync();
 
-            if (updateInfo == null)
+                if (updateInfo == null)
+                    return "You are already using the latest version.";
+
+                await _updateManager.DownloadUpdatesAsync(updateInfo, progress);
+
+                _updateManager.ApplyUpdatesAndRestart(updateInfo.TargetFullRelease);
+
+                return "Update downloaded. Restarting...";
+            }
+            catch
+            {
                 return "You are already using the latest version.";
-
-            await _updateManager.DownloadUpdatesAsync(updateInfo, progress);
-
-            _updateManager.ApplyUpdatesAndRestart(updateInfo.TargetFullRelease);
-
-            return "Update downloaded. Restarting...";
+            }
         }
     }
 }
