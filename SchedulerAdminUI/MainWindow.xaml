@@ -77,6 +77,12 @@
                                 Margin="10,0,0,0"
                                 Click="RefreshButton_Click"
                                 IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"/>
+                        <Button Content="Check Updates"
+        Width="130"
+        Height="34"
+        Margin="10,8,0,0"
+        Click="CheckUpdatesButton_Click"
+        IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -306,26 +312,52 @@
 
                     <WrapPanel>
                         <Button Content="Change Time"
-        Width="120"
-        Height="34"
-        Margin="0,0,10,10"
-        Click="ChangeTimeButton_Click"
-        IsEnabled="{Binding CanEditActions}"/>
+            Width="120"
+            Height="34"
+            Margin="0,0,10,10"
+            Click="ChangeTimeButton_Click"
+            IsEnabled="{Binding CanEditActions}"/>
 
                         <Button Content="Edit Days"
-        Width="120"
-        Height="34"
-        Margin="0,0,10,10"
-        Click="EditDaysButton_Click"
-        IsEnabled="{Binding CanEditActions}"/>
+            Width="120"
+            Height="34"
+            Margin="0,0,10,10"
+            Click="EditDaysButton_Click"
+            IsEnabled="{Binding CanEditActions}"/>
 
                         <Button Content="Rename Job"
-        Width="120"
-        Height="34"
-        Margin="0,0,10,10"
-        Click="RenameJobButton_Click"
-        IsEnabled="{Binding CanEditActions}"/>
+            Width="120"
+            Height="34"
+            Margin="0,0,10,10"
+            Click="RenameJobButton_Click"
+            IsEnabled="{Binding CanEditActions}"/>
                     </WrapPanel>
+
+                    <Separator Margin="0,12,0,10"/>
+
+                    <TextBlock Text="Created by Jeffrey Hermo • SaniGear Technologies • Version 1.0"
+           FontSize="11"
+           Foreground="Gray"
+           HorizontalAlignment="Center"
+           Margin="0,6,0,0"/>
+
+                    <StackPanel Orientation="Horizontal"
+            HorizontalAlignment="Center"
+            Margin="0,4,0,0">
+                        <Button x:Name="CatButton"
+            Content="🐱"
+            Width="36"
+            Height="30"
+            FontSize="18"
+            Click="CatButton_Click"
+            ToolTip="Do not disturb the cat."/>
+
+                        <TextBlock x:Name="CatText"
+               Text=""
+               FontSize="18"
+               Margin="8,0,0,0"
+               VerticalAlignment="Center"/>
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </Border>

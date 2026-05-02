@@ -1,13 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using SchedulerAdminUI.Services;
 using SchedulerAdminUI.ViewModels;
 using System;
 using System.Windows;
+using System.Windows.Media;
 
 namespace SchedulerAdminUI
 {
     public partial class MainWindow : Window
     {
         private readonly MainViewModel _viewModel;
+        private int _catClickCount = 0;
+        private readonly MediaPlayer _meowPlayer = new();
 
         public MainWindow()
         {
@@ -108,6 +112,80 @@ namespace SchedulerAdminUI
                 return;
 
             await _viewModel.RenameSelectedJobAsync(dialog.InputValue);
+        }
+
+        private async void CheckUpdatesButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var updater = new AppUpdateService();
+
+                MessageBox.Show(
+                    "Checking GitHub for updates...",
+                    "Updater",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                var result = await updater.CheckAndUpdateAsync();
+
+                MessageBox.Show(
+                    result,
+                    "Updater",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Update failed:\n{ex.Message}",
+                    "Updater",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private async void CatButton_Click(object sender, RoutedEventArgs e)
+        {
+            _catClickCount++;
+
+            CatText.Text = "🐈";
+
+            var originalMargin = CatText.Margin;
+
+            CatText.Margin = new Thickness(8, -18, 0, 0);
+            await Task.Delay(120);
+            CatText.Margin = originalMargin;
+
+            if (_catClickCount >= 5)
+            {
+                _catClickCount = 0;
+
+                try
+                {
+                    var path = System.IO.Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        "Assets",
+                        "meow.mp3");
+
+                    if (!System.IO.File.Exists(path))
+                    {
+                        MessageBox.Show($"Meow file not found:\n{path}");
+                        return;
+                    }
+
+                    _meowPlayer.Open(new Uri(path, UriKind.Absolute));
+                    _meowPlayer.Volume = 1.0;
+                    _meowPlayer.Play();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Meow failed:\n{ex.Message}");
+                }
+
+                CatText.Text = "Meow!";
+                await Task.Delay(1200);
+                CatText.Text = "";
+            }
         }
     }
 }
