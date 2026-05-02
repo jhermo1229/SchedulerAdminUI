@@ -414,6 +414,21 @@ namespace SchedulerAdminUI.ViewModels
             }
         }
 
+        public string AppVersion
+        {
+            get
+            {
+                var version = System.Reflection.Assembly
+                    .GetExecutingAssembly()
+                    .GetName()
+                    .Version;
+
+                return version != null
+                    ? $"Version {version.Major}.{version.Minor}.{version.Build}"
+                    : "Version unknown";
+            }
+        }
+
         public async Task RenameSelectedJobAsync(string newName)
         {
             if (SelectedJob == null)

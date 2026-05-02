@@ -11,7 +11,7 @@ namespace SchedulerAdminUI.Services
         {
             _updateManager = new UpdateManager(
                 new GithubSource(
-                    "https://github.com/SchedulerAdminUI",
+                    "https://github.com/jhermo1229/SchedulerAdminUI",
                     null,
                     false));
         }
@@ -34,9 +34,9 @@ namespace SchedulerAdminUI.Services
 
                 return "Update downloaded. Restarting...";
             }
-            catch
+            catch (Exception ex)
             {
-                return "You are already using the latest version.";
+                return $"Update check failed: {ex.Message}";
             }
         }
     }
