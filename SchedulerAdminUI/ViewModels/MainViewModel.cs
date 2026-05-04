@@ -244,6 +244,19 @@ namespace SchedulerAdminUI.ViewModels
                 return;
             }
 
+            var email = NewRecipientEmail.Trim();
+
+            // Simple but reliable email regex
+            var emailRegex = new System.Text.RegularExpressions.Regex(
+                @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            if (!emailRegex.IsMatch(email))
+            {
+                ErrorMessage = "Invalid email format. Example: name@example.com";
+                return;
+            }
+
             try
             {
                 IsLoading = true;
@@ -251,7 +264,7 @@ namespace SchedulerAdminUI.ViewModels
                 ErrorMessage = "";
 
                 var selectedJobName = SelectedJob.Name;
-                var emailToAdd = NewRecipientEmail.Trim();
+                var emailToAdd = email;
 
                 var success = await _apiService.AddRecipientAsync(selectedJobName, emailToAdd);
 
