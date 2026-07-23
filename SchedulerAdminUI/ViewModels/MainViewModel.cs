@@ -45,10 +45,10 @@ namespace SchedulerAdminUI.ViewModels
         public ObservableCollection<SchedulerJobDto> Jobs { get; } = new();
 
         public ObservableCollection<string> ApiUrls { get; } = new()
-        {            
-            "http://192.168.2.109:5233/",
-            "http://localhost:5233/"
-        };
+{
+    "http://192.168.2.106:5233/",
+    "http://localhost:5233/"
+};
 
         public bool CanEditActions => !IsLoading && SelectedJob != null;
         public bool CanRemoveRecipient => !IsLoading && SelectedJob != null && !string.IsNullOrWhiteSpace(SelectedRecipient);
